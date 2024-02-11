@@ -4,11 +4,17 @@ passengerDetailsFile='passengers.csv'
 passengerFlightsFile='flightData.csv'
 docker run --rm \
 	-v $(pwd)/target/scala-2.12/${targetjar}:/home/${targetjar} \
-    -v $(pwd)/${passengerDetailsFile}:/home/${passengerDetailsFile} \
     -v $(pwd)/${passengerFlightsFile}:/home/${passengerFlightsFile} \
+    -v $(pwd)/${passengerDetailsFile}:/home/${passengerDetailsFile} \
     spark:3.5.0-scala2.12-java11-ubuntu \
     /opt/spark/bin/spark-submit \
-    --class jobs.NumberOfFlightsPerMonth \
+    --class jobs.MostFrequentFliers \
 	--master local[1] \
 	/home/${targetjar} \
-	/home/${passengerFlightsFile}
+	/home/${passengerFlightsFile} \
+	/home/${passengerDetailsFile}
+
+
+# jobs
+#    --class jobs.TotalFlightsPerMonth \
+#    --class jobs.MostFrequentFliers \
