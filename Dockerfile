@@ -1,6 +1,5 @@
 FROM ubuntu:latest
 
-
 ARG SPARK_VERSION=spark-2.4.8
 ARG HADOOP_VERSION=hadoop2.7
 ARG JAVA_VERSION=openjdk-8-jre
