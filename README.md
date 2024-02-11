@@ -28,10 +28,12 @@ You can either:
 - Or you can build your own using the `Dockerfile` provided in this repo as a template. Parametrize it for your desired Spark version [see the archive](https://archive.apache.org/dist/spark/). **Use only Spark WITH hadoop!**.
     DISCLAIMER: Potential errors issues with lower versions of Spark and Scala (i.e. Spark 2.4.8 and Scala 2.12.10).
 
-**Using the script**
-Use `run.sh <JOB_NAME>`.
+**Use the script to get a feel of how it works**
+You can run jobs **with pre-defined parameters** using `run.sh <JOB_NAME`. Output is hardcoded to an `output` folder (will be created if it does not exist).
+To *easily* run all jobs I've also created a simple Makefile:
+You can run all jobs sequentially with `make run-all`
 
-Output is hardcoded to the `output` folder.
+But ideally you should submit the job to a spark cluster and provide the args there.
 
 The available job names are:
     - `TotalFlightsPerMonth`

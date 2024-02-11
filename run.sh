@@ -24,10 +24,16 @@ case "$1" in
     usage
     ;;
 esac
+#
+# Other args that should be parametrized
+fromDate='2017-01-01'
+toDate='2017-02-01'
+minFlights='3'
 
 targetjar='dummy-spark_2.12-0.1.0.jar'
 passengerDetailsFile='passengers.csv'
 passengerFlightsFile='flightData.csv'
+
 docker run --rm \
 	-v $(pwd)/target/scala-2.12/${targetjar}:/app/${targetjar} \
     -v $(pwd)/${passengerFlightsFile}:/app/${passengerFlightsFile} \
@@ -40,6 +46,6 @@ docker run --rm \
 	/app/${targetjar} \
 	/app/${passengerFlightsFile} \
 	/app/${passengerDetailsFile} \
-    2017-01-01 \
-    2017-02-01 \
-    3
+    ${fromDate} \
+    ${toDate} \
+    ${minFlights}
