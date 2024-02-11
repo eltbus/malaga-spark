@@ -6,9 +6,9 @@ docker run --rm \
 	-v $(pwd)/target/scala-2.12/${targetjar}:/home/${targetjar} \
     -v $(pwd)/${passengerDetailsFile}:/home/${passengerDetailsFile} \
     -v $(pwd)/${passengerFlightsFile}:/home/${passengerFlightsFile} \
-    spark:3.5.0-scala2.12-java11-ubuntu \
+    myspark \
     /opt/spark/bin/spark-submit \
-    --class jobs.NumberOfFlightsPerMonth \
+    --class jobs.Foo \
 	--master local[1] \
 	/home/${targetjar} \
 	/home/${passengerFlightsFile}

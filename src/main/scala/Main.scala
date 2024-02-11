@@ -1,6 +1,6 @@
-import org.apache.spark.sql.{SparkSession, DataFrame}
+import org.apache.spark.sql.SparkSession
 
-object MySparkApp {
+object Main {
   def main(args: Array[String]): Unit = {
     if (args.length < 1) {
       println("Usage: MySparkApp <input path>")
