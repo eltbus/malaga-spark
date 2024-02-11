@@ -1,2 +1,3 @@
-**/*.csv
+.bsp
+.idea
 **/target

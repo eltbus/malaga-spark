@@ -1,3 +1,6 @@
+# IMPORTANT
+**REPLACE `passengers.csv` and `flightData.csv` in the project root with the zipped files before going any further!**
+
 # Quantexa Scala Malaga
 In this repo you will find the Dev Case code solution in Scala and the utilities to generate the solution for each question.
 
@@ -7,7 +10,7 @@ In order to compile, test, package, and run in a local spark cluster the followi
 - Scala=2.12<=2.13
 - JRE=8
 - Docker
-- **The data files**. This Git repo only has lightweight sample files. Replace them with the real files (included in the ZIP).
+- **IMPORTANT: the data files**. This Git repo only has lightweight sample files with header + ten rows. Replace them with the real files (included in the ZIP).
 
 # How to
 ### Compile, test, and package
@@ -30,6 +33,8 @@ You can either:
 
 **Use the script to get a feel of how it works**
 You can run jobs **with pre-defined parameters** using `run.sh <JOB_NAME`. Output is hardcoded to an `output` folder (will be created if it does not exist).
+
+**IMPORTANT**: remember that you need
 To *easily* run all jobs I've also created a simple Makefile:
 You can run all jobs sequentially with `make run-all`
 
