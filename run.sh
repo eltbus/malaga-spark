@@ -30,7 +30,7 @@ fromDate='2017-01-01'
 toDate='2017-02-01'
 minFlights='3'
 
-targetjar='dummy-spark_2.12-0.1.0.jar'
+targetjar='malaga-spark_2.12-0.1.0.jar'
 passengerDetailsFile='passengers.csv'
 passengerFlightsFile='flightData.csv'
 
