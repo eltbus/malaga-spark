@@ -1,14 +1,14 @@
 package jobs
 
 import org.apache.spark.sql.functions.col
-import org.apache.spark.sql.{Dataset, SparkSession}
+import org.apache.spark.sql.{Dataset, SaveMode, SparkSession}
 import sinks.{DetailedPassengerTotalFlights, PassengerTotalFlights}
 import sources.{PassengerDetail, PassengerFlight}
 
 object MostFrequentFliers {
   def main(args: Array[String]): Unit = {
     if (args.length < 2) {
-      println("Usage: Bar <input path>")
+      println("Usage: <flight-data-filepath> <passenger-data-filepath>")
       System.exit(1)
     }
 
@@ -44,7 +44,12 @@ object MostFrequentFliers {
         )
       )
 
-    result.show()
+    result
+      .write
+      .mode(SaveMode.Overwrite)
+      .option("header", "true")
+      .csv("/app/output/mostFrequentFliers")
+
     spark.stop()
   }
 }

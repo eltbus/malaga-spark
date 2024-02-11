@@ -1,13 +1,13 @@
 package jobs
 
-import org.apache.spark.sql.{Dataset, SparkSession}
+import org.apache.spark.sql.{Dataset, SaveMode, SparkSession}
 import sinks.FlightsPerMonth
 import sources.PassengerFlight
 
 object TotalFlightsPerMonth {
   def main(args: Array[String]): Unit = {
     if (args.length < 1) {
-      println("Usage: Foo <input path>")
+      println("Usage: <flight-data-filepath>")
       System.exit(1)
     }
 
@@ -21,7 +21,7 @@ object TotalFlightsPerMonth {
 
     val passengerFlights: Dataset[PassengerFlight] = PassengerFlight.readFromCsv(paths = Seq(inputPath), options = Map("header" -> "true"))
 
-    val result = passengerFlights
+    val result: Dataset[FlightsPerMonth] = passengerFlights
       .map(f => (f.getMonthNumber, f.flightId))
       .distinct()
       .map(f => (f._1, 1))
@@ -29,8 +29,14 @@ object TotalFlightsPerMonth {
       .reduceByKey(_ + _)
       .toDF("month", "totalFlights")
       .as[FlightsPerMonth]
+      .orderBy("month")
 
-    result.show()
+    result
+      .write
+      .mode(SaveMode.Overwrite)
+      .option("header", "true")
+      .csv("/app/output/totalFlightsPerMonth")
+
     spark.stop()
   }
 }

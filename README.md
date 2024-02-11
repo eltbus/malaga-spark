@@ -1,27 +1,39 @@
-# How to test
-Use `sbt test`. To run integration tests you may need extra params.
+# Quantexa Scala Malaga
+In this repo you will find the Dev Case code solution in Scala and the utilities to generate the solution for each question.
 
-# How to run
-## A. (PREFERRED) Submit spark application
+# Requirements
+In order to compile, test, package, and run in a local spark cluster the following are required:
+- SBT>=1.9<2.0
+- Scala=2.12<=2.13
+- JRE=8
+- Docker
+- **The data files**. This Git repo only has lightweight sample files. Replace them with the real files (included in the ZIP).
 
-### Install dockerized `spark-submit` 
-Pull `spark` from either [this](https://hub.docker.com/r/apache/spark) or [this](https://hub.docker.com/_/spark).
-
----
-Take inspiration from the following example to submit an application that processes a local CSV:
-```bash
-docker run --rm \
-	-v <path-to-your-JAR>:<desired-JAR-path-in-docker> \
-    -v <path-to-your-CSV>:<desired-CSV-path-in-docker> \
-    <SPARK_IMAGE>:<TAG> \
-    /opt/spark/bin/spark-submit \
-    --class <YourClass> \
-	--master local[1] \
-    <desired-JAR-path-in-docker> \
-    <desired-CSV-path-in-docker>
+# How to
+### Compile, test, and package
+Use sbt!
 ```
-You can also use the example `run.sh`
+$ sbt
+>>> compile
+>>> test
+>>> package
+```
 
-## B. Use `sbt run`
-Just pass the local file path.
-WARNING: You may run into issues due to lacking SparkSession build options (i.e. `"master=local[*]"`)
+### Run
+Submit the job to a Spark cluster. To simulate this locally we use Docker.
+
+You can either:
+- Pull Apache's Sponsored `spark` image [here](https://hub.docker.com/r/apache/spark)
+- Pull Docker's official `spark` image [here](https://hub.docker.com/_/spark).
+- Or you can build your own using the `Dockerfile` provided in this repo as a template. Parametrize it for your desired Spark version [see the archive](https://archive.apache.org/dist/spark/). **Use only Spark WITH hadoop!**.
+    DISCLAIMER: Potential errors issues with lower versions of Spark and Scala (i.e. Spark 2.4.8 and Scala 2.12.10).
+
+**Using the script**
+Use `run.sh <JOB_NAME>`.
+
+The available job names are:
+    - `TotalFlightsPerMonth`
+    - `MostFrequentFliers`
+    - `LongestRunOutsideUK`
+    - `TotalSharedFlights`
+    - `TotalSharedFlightsInRange`
