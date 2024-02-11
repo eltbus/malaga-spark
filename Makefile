@@ -18,4 +18,4 @@ run-all:
 	@bash run.sh MostFrequentFliers
 	@bash run.sh LongestRunOutsideUK
 	@bash run.sh TotalSharedFlights
-	# @bash run.sh TotalSharedFlightsInRange
+	@bash run.sh TotalSharedFlightsInRange

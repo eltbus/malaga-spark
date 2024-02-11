@@ -31,6 +31,8 @@ You can either:
 **Using the script**
 Use `run.sh <JOB_NAME>`.
 
+Output is hardcoded to the `output` folder.
+
 The available job names are:
     - `TotalFlightsPerMonth`
     - `MostFrequentFliers`

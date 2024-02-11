@@ -35,7 +35,7 @@ docker run --rm \
     -v $(pwd)/output:/app/output \
     spark:3.5.0-scala2.12-java11-ubuntu \
     /opt/spark/bin/spark-submit \
-	--master local[1] \
+	--master local[2] \
     --class jobs.${1} \
 	/app/${targetjar} \
 	/app/${passengerFlightsFile} \
