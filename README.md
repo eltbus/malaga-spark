@@ -14,7 +14,7 @@ In order to compile, test, package, and run in a local spark cluster the followi
 
 # How to
 ### Compile, test, and package
-Use sbt!
+Use sbt! **This is required before running it!!**
 ```
 $ sbt
 >>> compile
@@ -23,6 +23,7 @@ $ sbt
 ```
 
 ### Run
+Once we have compiled and packaged the app (`sbt package`), we can run it.
 Submit the job to a Spark cluster. To simulate this locally we use Docker.
 
 You can either:
@@ -34,7 +35,6 @@ You can either:
 **Use the script to get a feel of how it works**
 You can run jobs **with pre-defined parameters** using `run.sh <JOB_NAME`. Output is hardcoded to an `output` folder (will be created if it does not exist).
 
-**IMPORTANT**: remember that you need
 To *easily* run all jobs I've also created a simple Makefile:
 You can run all jobs sequentially with `make run-all`
 
