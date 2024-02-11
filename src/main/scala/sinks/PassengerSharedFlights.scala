@@ -3,8 +3,6 @@ package sinks
 import helpers.DatasetIO
 import org.apache.spark.sql.{Encoder, Encoders}
 
-import java.sql.Date
-
 case class PassengerSharedFlights(
                                    firstPassengerId: Option[Int],
                                    secondPassengerId: Option[Int],

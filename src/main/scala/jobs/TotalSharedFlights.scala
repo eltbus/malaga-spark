@@ -19,16 +19,13 @@ object TotalSharedFlights {
 
     import spark.implicits._
 
-    val passengerFlights: Dataset[PassengerFlight] = PassengerFlight.readFromCsv(paths = Seq(inputPath), options = Map("header" -> "true"))
+    val passengerFlights = PassengerFlight.readFromCsv(paths = Seq(inputPath), options = Map("header" -> "true"))
 
     val sameFlightCond: Column = $"a.flightId" === $"b.flightId"
     val diffPassenger: Column = $"a.passengerId" < $"b.passengerId"
 
     val result = passengerFlights.as("a")
-      .joinWith(
-        passengerFlights.as("b"),
-        condition = sameFlightCond && diffPassenger,
-      )
+      .joinWith(passengerFlights.as("b"), condition = sameFlightCond && diffPassenger)
       .map(f => ((f._1.passengerId, f._2.passengerId), 1))
       .rdd
       .reduceByKey(_ + _)

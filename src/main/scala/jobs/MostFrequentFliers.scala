@@ -19,10 +19,26 @@ object MostFrequentFliers {
       .appName("MostFrequentFliers")
       .getOrCreate()
 
-    import spark.implicits._
+    val passengerFlights = PassengerFlight.readFromCsv(paths = Seq(inputPath1), options = Map("header" -> "true"))
+    val passengerDetails = PassengerDetail.readFromCsv(paths = Seq(inputPath2), options = Map("header" -> "true"))
 
-    val passengerFlights: Dataset[PassengerFlight] = PassengerFlight.readFromCsv(paths = Seq(inputPath1), options = Map("header" -> "true"))
-    val passengerDetails: Dataset[PassengerDetail] = PassengerDetail.readFromCsv(paths = Seq(inputPath2), options = Map("header" -> "true"))
+    val result = process(passengerFlights, passengerDetails)
+
+    result
+      .write
+      .mode(SaveMode.Overwrite)
+      .option("header", "true")
+      .csv("/app/output/mostFrequentFliers")
+
+    spark.stop()
+  }
+
+  def process(
+               passengerFlights: Dataset[PassengerFlight],
+               passengerDetails: Dataset[PassengerDetail],
+               limit: Int = 100
+             )(implicit spark: SparkSession): Dataset[DetailedPassengerTotalFlights] = {
+    import spark.implicits._
 
     val top100 = passengerFlights
       .map(f => (f.passengerId, 1))
@@ -31,9 +47,9 @@ object MostFrequentFliers {
       .toDF("passengerId", "totalFlights")
       .as[PassengerTotalFlights]
       .orderBy(col("totalFlights").desc)
-      .limit(100)
+      .limit(limit)
 
-    val result = top100
+    top100
       .joinWith(passengerDetails, condition = top100("passengerId") === passengerDetails("passengerId"))
       .map(
         f => DetailedPassengerTotalFlights(
@@ -43,13 +59,5 @@ object MostFrequentFliers {
           lastName = f._2.lastName
         )
       )
-
-    result
-      .write
-      .mode(SaveMode.Overwrite)
-      .option("header", "true")
-      .csv("/app/output/mostFrequentFliers")
-
-    spark.stop()
   }
 }

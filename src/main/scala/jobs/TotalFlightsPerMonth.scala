@@ -17,19 +17,9 @@ object TotalFlightsPerMonth {
       .appName("TotalFlightsPerMonth")
       .getOrCreate()
 
-    import spark.implicits._
+    val passengerFlights = PassengerFlight.readFromCsv(paths = Seq(inputPath), options = Map("header" -> "true"))
 
-    val passengerFlights: Dataset[PassengerFlight] = PassengerFlight.readFromCsv(paths = Seq(inputPath), options = Map("header" -> "true"))
-
-    val result: Dataset[FlightsPerMonth] = passengerFlights
-      .map(f => (f.getMonthNumber, f.flightId))
-      .distinct()
-      .map(f => (f._1, 1))
-      .rdd
-      .reduceByKey(_ + _)
-      .toDF("month", "totalFlights")
-      .as[FlightsPerMonth]
-      .orderBy("month")
+    val result: Dataset[FlightsPerMonth] = process(passengerFlights)
 
     result
       .write
@@ -39,5 +29,18 @@ object TotalFlightsPerMonth {
 
     spark.stop()
   }
-}
 
+  def process(passengerFlights: Dataset[PassengerFlight])(implicit spark: SparkSession): Dataset[FlightsPerMonth] = {
+    import spark.implicits._
+
+    passengerFlights
+      .map(f => (f.getMonthNumber, f.flightId))
+      .distinct()
+      .map(f => (f._1, 1))
+      .rdd
+      .reduceByKey(_ + _)
+      .toDF("month", "totalFlights")
+      .as[FlightsPerMonth]
+      .orderBy("month")
+  }
+}

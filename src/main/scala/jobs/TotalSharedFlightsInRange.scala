@@ -42,7 +42,7 @@ object TotalSharedFlightsInRange {
 
     import spark.implicits._
 
-    val passengerFlights: Dataset[PassengerFlight] = PassengerFlight.readFromCsv(paths = Seq(inputPath), options = Map("header" -> "true"))
+    val passengerFlights = PassengerFlight.readFromCsv(paths = Seq(inputPath), options = Map("header" -> "true"))
     val filteredPassengerFlights = passengerFlights
       .filter(f => f.date.exists(_.after(fromDate)))
       .filter(f => f.date.exists(_.before(toDate)))
@@ -51,10 +51,7 @@ object TotalSharedFlightsInRange {
     val diffPassenger: Column = $"a.passengerId" < $"b.passengerId"
 
     val result = filteredPassengerFlights.as("a")
-      .joinWith(
-        passengerFlights.as("b"),
-        condition = sameFlightCond && diffPassenger,
-      )
+      .joinWith(passengerFlights.as("b"), condition = sameFlightCond && diffPassenger)
       .groupByKey { case (a, b) => (a.passengerId, b.passengerId) }
       .flatMapGroups {
         case (key, iterator) =>
@@ -74,8 +71,6 @@ object TotalSharedFlightsInRange {
           )
       }
       .filter(f => f.totalFlightsTogether > minFlights)
-
-    result.show()
 
     result
       .write

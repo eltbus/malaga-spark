@@ -11,7 +11,7 @@ case class PassengerSharedFlightsInRange(
                                           totalFlightsTogether: Long,
                                           fromDate: Option[Date],
                                           toDate: Option[Date],
-                                 )
+                                        )
 
 object PassengerSharedFlightsInRange extends DatasetIO[PassengerSharedFlightsInRange] {
   implicit lazy val encoder: Encoder[PassengerSharedFlightsInRange] = Encoders.product[PassengerSharedFlightsInRange]

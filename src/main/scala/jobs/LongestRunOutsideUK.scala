@@ -28,34 +28,35 @@ object LongestRunOutsideUK {
       .appName("LongestRunOutsideUK")
       .getOrCreate()
 
-    import spark.implicits._
+    val passengerFlights = PassengerFlight.readFromCsv(paths = Seq(inputPath), options = Map("header" -> "true"))
 
-    val passengerFlights: Dataset[PassengerFlight] = PassengerFlight.readFromCsv(paths = Seq(inputPath), options = Map("header" -> "true"))
-
-    val result = passengerFlights
-      .groupByKey(f => f.passengerId)
-      .flatMapGroups( // TODO: m
-        (passengerId, flightsIterator) => {
-          val sortedFlights = flightsIterator.toSeq.sortBy(_.date) // TODO: nlog(n)
-          val longestSequence = longestRunOutsideUK(sortedFlights) // TODO: n
-          Iterator(
-            PassengerLongestRunOutsideUK(passengerId, longestSequence)
-          )
-        }
-      )
+    val result = process(passengerFlights)
 
     result
       .write
       .mode(SaveMode.Overwrite)
       .option("header", "true")
-      .csv("/app/output/longestRunOutsideUK")
+      .csv("/app/output/longestRunOutsideUKSize")
 
     spark.stop()
   }
 
-  private def longestRunOutsideUK(flights: Seq[PassengerFlight]): Long = { // TODO: O(n) = n
+  def process(passengerFlights: Dataset[PassengerFlight])(implicit spark: SparkSession): Dataset[PassengerLongestRunOutsideUK] = {
+    import spark.implicits._
 
-    var maxCount: Long = 1 // NOTE: assuming only international flights
+    passengerFlights
+      .groupByKey(f => f.passengerId)
+      .flatMapGroups(
+        (passengerId, flightsIterator) => {
+          val sortedFlights = flightsIterator.toSeq.sortBy(_.date)
+          val longestSequenceSize = longestRunOutsideUKSize(sortedFlights)
+          Iterator(PassengerLongestRunOutsideUK(passengerId, longestSequenceSize))
+        }
+      )
+  }
+
+  def longestRunOutsideUKSize(flights: Seq[PassengerFlight]): Long = {
+    var maxCount: Long = 1 // NOTE: assume international flights only
     var currentCount: Long = 0
     flights.foreach { f =>
       if (f.to.map(_.toLowerCase).contains("uk")) {
