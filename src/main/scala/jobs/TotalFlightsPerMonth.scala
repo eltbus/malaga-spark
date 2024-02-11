@@ -6,6 +6,12 @@ import sources.PassengerFlight
 
 object TotalFlightsPerMonth {
   def main(args: Array[String]): Unit = {
+    /*
+    Parse
+    Read
+    Process
+    Write
+     */
     if (args.length < 1) {
       println("Usage: <flight-data-filepath>")
       System.exit(1)

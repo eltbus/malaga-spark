@@ -18,6 +18,12 @@ object TotalSharedFlightsInRange {
     }
 
   def main(args: Array[String]): Unit = {
+    /*
+    Parse
+    Read
+    Process
+    Write
+     */
     if (args.length < 4) {
       println("Usage: <flight-data-filepath> <passenger-data-filepath> <from-date> <to-date> <min-num-flights-together")
       println("Example: data/foo.csv data/bar.csv 2022-01-01 2022-01-01 10")
@@ -40,9 +46,28 @@ object TotalSharedFlightsInRange {
       .appName("TotalSharedFlightsInRange")
       .getOrCreate()
 
-    import spark.implicits._
 
     val passengerFlights = PassengerFlight.readFromCsv(paths = Seq(inputPath), options = Map("header" -> "true"))
+
+    val result = process(passengerFlights, fromDate, toDate, minFlights)
+
+    result
+      .write
+      .mode(SaveMode.Overwrite)
+      .option("header", "true")
+      .csv("/app/output/totalSharedFlightsInRange")
+
+    spark.stop()
+  }
+
+  def process(
+               passengerFlights: Dataset[PassengerFlight],
+               fromDate: Date,
+               toDate: Date,
+               minFlights: Int = 3
+             )(implicit spark: SparkSession): Dataset[PassengerSharedFlightsInRange] = {
+    import spark.implicits._
+
     val filteredPassengerFlights = passengerFlights
       .filter(f => f.date.exists(_.after(fromDate)))
       .filter(f => f.date.exists(_.before(toDate)))
@@ -50,7 +75,7 @@ object TotalSharedFlightsInRange {
     val sameFlightCond: Column = $"a.flightId" === $"b.flightId"
     val diffPassenger: Column = $"a.passengerId" < $"b.passengerId"
 
-    val result = filteredPassengerFlights.as("a")
+    filteredPassengerFlights.as("a")
       .joinWith(passengerFlights.as("b"), condition = sameFlightCond && diffPassenger)
       .groupByKey { case (a, b) => (a.passengerId, b.passengerId) }
       .flatMapGroups {
@@ -70,14 +95,6 @@ object TotalSharedFlightsInRange {
             )
           )
       }
-      .filter(f => f.totalFlightsTogether > minFlights)
-
-    result
-      .write
-      .mode(SaveMode.Overwrite)
-      .option("header", "true")
-      .csv("/app/output/totalSharedFlightsInRange")
-
-    spark.stop()
+      .filter(f => f.totalFlightsTogether >= minFlights)
   }
 }

@@ -7,6 +7,12 @@ import sources.{PassengerDetail, PassengerFlight}
 
 object MostFrequentFliers {
   def main(args: Array[String]): Unit = {
+    /*
+    Parse
+    Read
+    Process
+    Write
+     */
     if (args.length < 2) {
       println("Usage: <flight-data-filepath> <passenger-data-filepath>")
       System.exit(1)
