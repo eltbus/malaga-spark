@@ -35,6 +35,7 @@ object TotalSharedFlights {
       .map { case (keyPair, count) => (keyPair._1, keyPair._2, count) }
       .toDF("firstPassengerId", "secondPassengerId", "totalFlightsTogether")
       .as[PassengerSharedFlights]
+      .filter(f => f.totalFlightsTogether > 3)
 
     result
       .write

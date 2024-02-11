@@ -39,4 +39,7 @@ docker run --rm \
     --class jobs.${1} \
 	/app/${targetjar} \
 	/app/${passengerFlightsFile} \
-	/app/${passengerDetailsFile}
+	/app/${passengerDetailsFile} \
+    2017-01-01 \
+    2017-02-01 \
+    3

@@ -35,8 +35,8 @@ object LongestRunOutsideUK {
     val result = passengerFlights
       .groupByKey(f => f.passengerId)
       .flatMapGroups( // TODO: m
-        (passengerId, flights) => {
-          val sortedFlights = flights.toSeq.sortBy(_.date) // TODO: nlog(n)
+        (passengerId, flightsIterator) => {
+          val sortedFlights = flightsIterator.toSeq.sortBy(_.date) // TODO: nlog(n)
           val longestSequence = longestRunOutsideUK(sortedFlights) // TODO: n
           Iterator(
             PassengerLongestRunOutsideUK(passengerId, longestSequence)

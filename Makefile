@@ -12,3 +12,10 @@ run-TotalSharedFlights:
 
 run-TotalSharedFlightsInRange:
 	@bash run.sh TotalSharedFlightsInRange
+
+run-all:
+	@bash run.sh TotalFlightsPerMonth
+	@bash run.sh MostFrequentFliers
+	@bash run.sh LongestRunOutsideUK
+	@bash run.sh TotalSharedFlights
+	# @bash run.sh TotalSharedFlightsInRange
